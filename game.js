@@ -11,10 +11,11 @@ const gameArea = {
 
   clear() {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-  },
+  }
 };
 
-class baseElement {
+// CLASS TO SETUP BRICKS
+class BaseElement {
   constructor(x, y, color, width, height) {
     this.width = width;
     this.height = height;
@@ -30,7 +31,8 @@ class baseElement {
   }
 }
 
-class movingElement extends baseElement {
+// CLASS TO SETUP BAR
+class MovingElement extends BaseElement {
   constructor(x, y, color, width, height) {
     super(x, y, color, width, height);
     this.speedX = 0;
@@ -43,6 +45,10 @@ class movingElement extends baseElement {
   }
 }
 
+// BAR-PLAYER
+const player = new MovingElement(350, 600, 'black', 100, 10);
+
+// CLASS TO SETUP BALL
 class Ball {
   constructor(x, y, color, radius, startAngle, endAngle) {
     this.x = x;
@@ -63,7 +69,7 @@ class Ball {
       this.y,
       this.radius,
       this.startAngle,
-      this.endAngle
+      this.endAngle,
     );
     gameArea.context.stroke();
   }
@@ -83,10 +89,7 @@ class Ball {
     }
 
     if (
-      this.x >= player.x &&
-      this.y >= player.y &&
-      this.x <= player.x + 100 &&
-      this.y >= player.y
+      this.x >= player.x && this.y === player.y && this.x <= player.x + 100 && this.y === player.y
     ) {
       this.speedX = +this.speedX;
       this.speedY = -this.speedY;
@@ -94,63 +97,56 @@ class Ball {
   }
 }
 
-// BAR-PLAYER
-const player = new movingElement(350, 600, 'black', 100, 10);
-
-//BALL
-const ball = new Ball(400, 500, 'black', 10, 0, 2 * Math.PI);
-
-let brick = {
-  row: 3,
-  column: 9,
+const brick = {
+  row: 5,
+  column: 15,
   width: 50,
   height: 20,
-  padding: 1
+  padding: 1,
 };
 
-let bricks = [];
+const bricks = [];
 
-for (let c = 0; c < brick.column; c++) {
-  for (let r = 0; r < brick.row; r++) {
-    bricks.push({
-      x: c * (brick.width + brick.padding),
-      y: r * (brick.height + brick.padding),
-      status: 1
-    });
+for (let c = 0; c < brick.column; c += 1) {
+  for (let r = 0; r < brick.row; r += 1) {
+    bricks.push(
+      new BaseElement(
+        c * (brick.width + brick.padding) + 15,
+        r * (brick.height + brick.padding) + 30,
+        'blue',
+        brick.width,
+        brick.height,
+      ),
+    );
   }
 }
 
-function drawBricks() {
-  bricks.forEach(brick => {
-    if (bricks.status) {
-      new Component(50, 20, 'yellow', brick.width, brick.height);
-    }
-  });
-}
-
-console.log(bricks);
+// BALL
+const ball = new Ball(400, 500, 'black', 10, 0, 2 * Math.PI);
 
 // BAR MOVIMENTATION
-document.onkeydown = e => {
+document.onkeydown = (e) => {
   if (e.keyCode === 37) {
     player.speedX = -5;
   } else if (e.keyCode === 39) {
     player.speedX = 5;
   }
 };
-
 document.onkeyup = () => {
   player.speedX = 0;
   player.speedY = 0;
 };
 
-// UPDATE
+// UPDATE GAME AREA
 function updateGameArea() {
   gameArea.clear();
   player.update();
   player.newPos();
   ball.ballUpdate();
   ball.newPos();
+  bricks.forEach((b) => {
+    b.update();
+  });
 }
 
 // START THE GAME
