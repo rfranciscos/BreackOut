@@ -1,16 +1,32 @@
+let score = 0;
+let level = 1;
+let speedBall = (level * 5) / 2;
+let lifes = 3;
+
 // AREA OF THE GAME
 const gameArea = {
   canvas: document.createElement('canvas'),
   start() {
     this.canvas.width = 800;
     this.canvas.height = 800;
+    this.canvas.padding = 300;
     this.context = this.canvas.getContext('2d');
-    document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+
+    document.body.insertBefore(this.canvas, document.body.childNodes[2]);
     this.interval = setInterval(updateGameArea, 20);
   },
 
   clear() {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  },
+
+  score() {
+    points = score;
+    this.context.font = '18px serif';
+    this.context.fillStyle = 'white';
+    this.context.fillText('SCORE: ' + points, 350, 50);
+    this.context.fillText('LEVEL: ' + level, 550, 50);
+    this.context.fillText('LIFE: ' + lifes, 50, 50);
   }
 };
 
@@ -29,6 +45,7 @@ class Ball {
 
   ballUpdate() {
     gameArea.context.beginPath();
+    gameArea.context.fillStyle = 'white';
     gameArea.context.arcStyle = this.color;
     gameArea.context.arc(
       this.x,
@@ -37,10 +54,11 @@ class Ball {
       this.startAngle,
       this.endAngle
     );
+    gameArea.context.fill();
     gameArea.context.stroke();
   }
 
-  newPos(player) {
+  newPos() {
     this.x += this.speedX;
     this.y += this.speedY;
 
@@ -53,78 +71,150 @@ class Ball {
     if (this.y + this.speedY < this.radius) {
       this.speedY = -this.speedY;
     }
+    console.log(this.speedX);
 
     if (
       this.x >= player.x &&
-      this.y === player.y &&
-      this.x <= player.x + 100 &&
-      this.y === player.y
+      this.x <= player.x + 30 &&
+      this.y >= player.y &&
+      this.y <= player.y + 29
+    ) {
+      this.speedX = -this.speedX;
+      this.speedY = -this.speedY;
+    }
+
+    if (
+      this.x >= player.x + 30 &&
+      this.x <= player.x + 73 &&
+      this.y >= player.y &&
+      this.y <= player.y + 29
     ) {
       this.speedX = +this.speedX;
       this.speedY = -this.speedY;
+    }
+
+    if (
+      this.x >= player.x + 73 &&
+      this.x <= player.x + 133 &&
+      this.y >= player.y &&
+      this.y <= player.y + 29
+    ) {
+      this.speedX = -this.speedX;
+      this.speedY = -this.speedY;
+    }
+  }
+
+  gameOver() {
+    if (this.y >= gameArea.canvas.height) {
+      lifes -= 1;
+      this.y = 200;
+      this.x = 400;
+      if (lifes === 0) {
+        clearInterval(gameArea.interval);
+        gameArea.context.font = '50px Ariel';
+        gameArea.context.fillText('GAME OVER', 250, 450);
+
+        // Render button
+        gameArea.context.fillStyle = 'red';
+        gameArea.context.fillRect(350, 450, 100, 50);
+        // Add event listener to canvas element
+        gameArea.canvas.addEventListener('Restart', function(event) {
+          // Control that click event occurred within position of button
+          // NOTE: This assumes canvas is positioned at top left corner
+          if (
+            event.x > 350 &&
+            event.x < 350 + 100 &&
+            event.y > 450 &&
+            event.y < 450 + 50
+          ) {
+            // Executes if button was clicked!
+            alert('Button was clicked!');
+          }
+        });
+      }
     }
   }
 }
 
 // CLASS TO SETUP BRICKS
 class BaseElement {
-  constructor(x, y, color, width, height, status) {
+  constructor(x, y, width, height, status) {
     this.width = width;
     this.height = height;
-    this.color = color;
     this.x = x;
     this.y = y;
     this.status = status;
+    this.Image = new Image();
+    this.Image.src = '/images/red_Brick.png';
   }
 
   update() {
     const ctx = gameArea.context;
-    ctx.fillStyle = this.color;
-    ctx.fillRect(this.x, this.y, this.width, this.height);
+    ctx.drawImage(this.Image, this.x, this.y);
   }
 
   collision() {
     if (
       ball.x - ball.radius >= this.x &&
       ball.x - ball.radius <= this.x + 50 &&
-      ball.y - ball.radius <= this.y
+      ball.y + ball.radius >= this.y &&
+      ball.y + ball.radius <= this.y + 20
     ) {
       ball.speedX = +ball.speedX;
       ball.speedY = -ball.speedY;
       this.status = 0;
+      score += 1;
     }
     if (
       ball.x - ball.radius >= this.x &&
       ball.x - ball.radius <= this.x + 50 &&
+      ball.y - ball.radius >= this.y &&
       ball.y - ball.radius <= this.y + 20
     ) {
       ball.speedX = +ball.speedX;
       ball.speedY = -ball.speedY;
       this.status = 0;
+      score += 1;
     }
   }
 }
 
 // CLASS TO SETUP BAR
-class MovingElement extends BaseElement {
-  constructor(x, y, color, width, height) {
-    super(x, y, color, width, height);
+class MovingElement {
+  constructor(x, y, width, height) {
+    this.width = width;
+    this.height = height;
+    this.x = x;
+    this.y = y;
     this.speedX = 0;
     this.speedY = 0;
+    this.Image = new Image();
+    this.Image.src = '/images/breakout_sprites.png';
   }
 
+  update() {
+    const ctx = gameArea.context;
+    ctx.drawImage(this.Image, this.x, this.y);
+  }
   newPos() {
     this.x += this.speedX;
     this.y += this.speedY;
   }
 }
 
-// BAR-PLAYER
-const player = new MovingElement(350, 600, 'black', 100, 10);
+function test() {
+  baseImage.src = '/images/breakout_sprites.png';
+  baseImage.onload = () => {
+    gameArea.context.drawImage(baseImage, 50, 20);
+  };
+}
 
-const brick = {
-  row: 5,
-  column: 15,
+// BAR-PLAYER
+const player = new MovingElement(350, 600, 100, 10);
+
+let brick = {
+  row: level,
+  column: 13,
   width: 50,
   height: 20,
   padding: 1
@@ -138,14 +228,37 @@ for (let c = 0; c < brick.column; c += 1) {
   for (let r = 0; r < brick.row; r += 1) {
     bricks.push(
       new BaseElement(
-        c * (brick.width + brick.padding) + 15,
-        r * (brick.height + brick.padding) + 30,
-        'blue',
+        c * (brick.width + brick.padding) + 65,
+        r * (brick.height + brick.padding) + 80,
         brick.width,
         brick.height,
         1
       )
     );
+  }
+}
+
+function levelMap() {
+  if (bricks.length === 0) {
+    level += 1;
+    if (ball.speedX < 0) {
+      ball.speedX += -2;
+    } else {
+      ball.speedY += 2;
+    }
+    for (let c = 0; c < brick.column; c += 1) {
+      for (let r = 0; r < level; r += 1) {
+        bricks.push(
+          new BaseElement(
+            c * (brick.width + brick.padding) + 65,
+            r * (brick.height + brick.padding) + 80,
+            brick.width,
+            brick.height,
+            1
+          )
+        );
+      }
+    }
   }
 }
 
@@ -155,9 +268,9 @@ const ball = new Ball(400, 500, 'black', 10, 0, 2 * Math.PI);
 // BAR MOVIMENTATION
 document.onkeydown = e => {
   if (e.keyCode === 37) {
-    player.speedX = -5;
+    player.speedX = -8;
   } else if (e.keyCode === 39) {
-    player.speedX = 5;
+    player.speedX = 8;
   }
 };
 document.onkeyup = () => {
@@ -170,6 +283,7 @@ function updateGameArea() {
   gameArea.clear();
   player.update();
   player.newPos();
+  // player.makeBase();
   ball.ballUpdate();
   ball.newPos(player);
   bricks.forEach(b => {
@@ -181,6 +295,9 @@ function updateGameArea() {
       bricks.splice(i, 1);
     }
   });
+  ball.gameOver();
+  gameArea.score();
+  levelMap();
 }
 
 // START THE GAME
