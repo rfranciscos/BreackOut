@@ -14,20 +14,94 @@ const gameArea = {
   }
 };
 
+// CLASS TO SETUP BALL
+class Ball {
+  constructor(x, y, color, radius, startAngle, endAngle) {
+    this.x = x;
+    this.y = y;
+    this.color = color;
+    this.radius = radius;
+    this.startAngle = startAngle;
+    this.endAngle = endAngle;
+    this.speedX = 5;
+    this.speedY = -5;
+  }
+
+  ballUpdate() {
+    gameArea.context.beginPath();
+    gameArea.context.arcStyle = this.color;
+    gameArea.context.arc(
+      this.x,
+      this.y,
+      this.radius,
+      this.startAngle,
+      this.endAngle
+    );
+    gameArea.context.stroke();
+  }
+
+  newPos(player) {
+    this.x += this.speedX;
+    this.y += this.speedY;
+
+    if (
+      this.x + this.speedX > gameArea.canvas.width - this.radius ||
+      this.x + this.speedX < this.radius
+    ) {
+      this.speedX = -this.speedX;
+    }
+    if (this.y + this.speedY < this.radius) {
+      this.speedY = -this.speedY;
+    }
+
+    if (
+      this.x >= player.x &&
+      this.y === player.y &&
+      this.x <= player.x + 100 &&
+      this.y === player.y
+    ) {
+      this.speedX = +this.speedX;
+      this.speedY = -this.speedY;
+    }
+  }
+}
+
 // CLASS TO SETUP BRICKS
 class BaseElement {
-  constructor(x, y, color, width, height) {
+  constructor(x, y, color, width, height, status) {
     this.width = width;
     this.height = height;
     this.color = color;
     this.x = x;
     this.y = y;
+    this.status = status;
   }
 
   update() {
     const ctx = gameArea.context;
     ctx.fillStyle = this.color;
     ctx.fillRect(this.x, this.y, this.width, this.height);
+  }
+
+  collision() {
+    if (
+      ball.x - ball.radius >= this.x &&
+      ball.x - ball.radius <= this.x + 50 &&
+      ball.y - ball.radius <= this.y
+    ) {
+      ball.speedX = +ball.speedX;
+      ball.speedY = -ball.speedY;
+      this.status = 0;
+    }
+    if (
+      ball.x - ball.radius >= this.x &&
+      ball.x - ball.radius <= this.x + 50 &&
+      ball.y - ball.radius <= this.y + 20
+    ) {
+      ball.speedX = +ball.speedX;
+      ball.speedY = -ball.speedY;
+      this.status = 0;
+    }
   }
 }
 
@@ -48,64 +122,17 @@ class MovingElement extends BaseElement {
 // BAR-PLAYER
 const player = new MovingElement(350, 600, 'black', 100, 10);
 
-// CLASS TO SETUP BALL
-class Ball {
-  constructor(x, y, color, radius, startAngle, endAngle) {
-    this.x = x;
-    this.y = y;
-    this.color = color;
-    this.radius = radius;
-    this.startAngle = startAngle;
-    this.endAngle = endAngle;
-    this.speedX = 4;
-    this.speedY = -4;
-  }
-
-  ballUpdate() {
-    gameArea.context.beginPath();
-    gameArea.context.arcStyle = this.color;
-    gameArea.context.arc(
-      this.x,
-      this.y,
-      this.radius,
-      this.startAngle,
-      this.endAngle,
-    );
-    gameArea.context.stroke();
-  }
-
-  newPos() {
-    this.x += this.speedX;
-    this.y += this.speedY;
-
-    if (
-      this.x + this.speedX > gameArea.canvas.width - this.radius ||
-      this.x + this.speedX < this.radius
-    ) {
-      this.speedX = -this.speedX;
-    }
-    if (this.y + this.speedY < this.radius) {
-      this.speedY = -this.speedY;
-    }
-
-    if (
-      this.x >= player.x && this.y === player.y && this.x <= player.x + 100 && this.y === player.y
-    ) {
-      this.speedX = +this.speedX;
-      this.speedY = -this.speedY;
-    }
-  }
-}
-
 const brick = {
   row: 5,
   column: 15,
   width: 50,
   height: 20,
-  padding: 1,
+  padding: 1
 };
 
 const bricks = [];
+
+console.log(bricks);
 
 for (let c = 0; c < brick.column; c += 1) {
   for (let r = 0; r < brick.row; r += 1) {
@@ -116,7 +143,8 @@ for (let c = 0; c < brick.column; c += 1) {
         'blue',
         brick.width,
         brick.height,
-      ),
+        1
+      )
     );
   }
 }
@@ -125,7 +153,7 @@ for (let c = 0; c < brick.column; c += 1) {
 const ball = new Ball(400, 500, 'black', 10, 0, 2 * Math.PI);
 
 // BAR MOVIMENTATION
-document.onkeydown = (e) => {
+document.onkeydown = e => {
   if (e.keyCode === 37) {
     player.speedX = -5;
   } else if (e.keyCode === 39) {
@@ -143,9 +171,15 @@ function updateGameArea() {
   player.update();
   player.newPos();
   ball.ballUpdate();
-  ball.newPos();
-  bricks.forEach((b) => {
+  ball.newPos(player);
+  bricks.forEach(b => {
     b.update();
+    b.collision();
+  });
+  bricks.forEach((b, i) => {
+    if (b.status === 0) {
+      bricks.splice(i, 1);
+    }
   });
 }
 
