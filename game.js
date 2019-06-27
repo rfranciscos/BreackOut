@@ -3,13 +3,13 @@ let level = 1;
 let speedBall = (level * 5) / 2;
 let lifes = 3;
 const collissionEfect = document.createElement('audio');
-collissionEfect.src = '/Sounds/collission.wav';
+collissionEfect.src = 'Sounds/collission.wav';
 
 const gameOverEfect = document.createElement('audio');
-gameOverEfect.src = '/Sounds/gameOver.wav';
+gameOverEfect.src = 'Sounds/gameOver.wav';
 
 const LevelUpEfect = document.createElement('audio');
-LevelUpEfect.src = '/Sounds/levelUp.wav';
+LevelUpEfect.src = 'Sounds/levelUp.wav';
 
 // AREA OF THE GAME
 const gameArea = {
@@ -141,7 +141,7 @@ class BaseElement {
     this.y = y;
     this.status = status;
     this.Image = new Image();
-    this.Image.src = '/images/red_Brick.png';
+    this.Image.src = 'images/red_Brick.png';
   }
 
   update() {
@@ -187,7 +187,7 @@ class MovingElement {
     this.speedX = 0;
     this.speedY = 0;
     this.Image = new Image();
-    this.Image.src = '/images/breakout_sprites.png';
+    this.Image.src = 'images/breakout_sprites.png';
   }
 
   update() {

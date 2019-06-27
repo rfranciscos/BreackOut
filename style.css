@@ -1,6 +1,6 @@
 canvas {
   border: 2px solid black;
-  background-image: url(/images/breakout_bg.png);
+  background-image: url('images/breakout_bg.png');
   background-repeat: round;
   margin-left: 250px;
 }
