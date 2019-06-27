@@ -2,6 +2,14 @@ let score = 0;
 let level = 1;
 let speedBall = (level * 5) / 2;
 let lifes = 3;
+const collisionEfect = document.createElement('audio');
+collisionEfect.src = '/Sounds/4388__noisecollector__pongblipe5.wav';
+
+const gameOverEfect = document.createElement('audio');
+gameOverEfect.src = '/Sounds/NEGATIVE Failure Descending Chime 05.wav';
+
+const LevelUpEfect = document.createElement('audio');
+LevelUpEfect.src = '/Sounds/SUCCESS CHEERS Win Cute Vocal Chime 03.wav';
 
 // AREA OF THE GAME
 const gameArea = {
@@ -11,7 +19,6 @@ const gameArea = {
     this.canvas.height = 800;
     this.canvas.padding = 300;
     this.context = this.canvas.getContext('2d');
-
     document.body.insertBefore(this.canvas, document.body.childNodes[2]);
     this.interval = setInterval(updateGameArea, 20);
   },
@@ -71,11 +78,10 @@ class Ball {
     if (this.y + this.speedY < this.radius) {
       this.speedY = -this.speedY;
     }
-    console.log(this.speedX);
 
     if (
       this.x >= player.x &&
-      this.x <= player.x + 30 &&
+      this.x <= player.x + 20 &&
       this.y >= player.y &&
       this.y <= player.y + 29
     ) {
@@ -84,8 +90,8 @@ class Ball {
     }
 
     if (
-      this.x >= player.x + 30 &&
-      this.x <= player.x + 73 &&
+      this.x >= player.x + 20 &&
+      this.x <= player.x + 113 &&
       this.y >= player.y &&
       this.y <= player.y + 29
     ) {
@@ -94,7 +100,7 @@ class Ball {
     }
 
     if (
-      this.x >= player.x + 73 &&
+      this.x >= player.x + 113 &&
       this.x <= player.x + 133 &&
       this.y >= player.y &&
       this.y <= player.y + 29
@@ -113,24 +119,14 @@ class Ball {
         clearInterval(gameArea.interval);
         gameArea.context.font = '50px Ariel';
         gameArea.context.fillText('GAME OVER', 250, 450);
+        gameOverEfect.play();
 
         // Render button
         gameArea.context.fillStyle = 'red';
-        gameArea.context.fillRect(350, 450, 100, 50);
-        // Add event listener to canvas element
-        gameArea.canvas.addEventListener('Restart', function(event) {
-          // Control that click event occurred within position of button
-          // NOTE: This assumes canvas is positioned at top left corner
-          if (
-            event.x > 350 &&
-            event.x < 350 + 100 &&
-            event.y > 450 &&
-            event.y < 450 + 50
-          ) {
-            // Executes if button was clicked!
-            alert('Button was clicked!');
-          }
-        });
+        gameArea.context.fillRect(350, 500, 100, 40);
+        gameArea.context.font = '20px Ariel';
+        gameArea.context.fillStyle = 'white';
+        gameArea.context.fillText('RESTART', 358, 525);
       }
     }
   }
@@ -164,6 +160,7 @@ class BaseElement {
       ball.speedY = -ball.speedY;
       this.status = 0;
       score += 1;
+      collisionEfect.play();
     }
     if (
       ball.x - ball.radius >= this.x &&
@@ -175,6 +172,7 @@ class BaseElement {
       ball.speedY = -ball.speedY;
       this.status = 0;
       score += 1;
+      collisionEfect.play();
     }
   }
 }
@@ -241,6 +239,7 @@ for (let c = 0; c < brick.column; c += 1) {
 function levelMap() {
   if (bricks.length === 0) {
     level += 1;
+    LevelUpEfect.play();
     if (ball.speedX < 0) {
       ball.speedX += -2;
     } else {
