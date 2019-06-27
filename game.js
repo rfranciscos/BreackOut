@@ -2,14 +2,14 @@ let score = 0;
 let level = 1;
 let speedBall = (level * 5) / 2;
 let lifes = 3;
-const collisionEfect = document.createElement('audio');
-collisionEfect.src = '/Sounds/4388__noisecollector__pongblipe5.wav';
+const collissionEfect = document.createElement('audio');
+collissionEfect.src = 'Sounds/4388__noisecollector__pongblipe5.wav';
 
 const gameOverEfect = document.createElement('audio');
-gameOverEfect.src = '/Sounds/NEGATIVE Failure Descending Chime 05.wav';
+gameOverEfect.src = 'Sounds/NEGATIVE Failure Descending Chime 05.wav';
 
 const LevelUpEfect = document.createElement('audio');
-LevelUpEfect.src = '/Sounds/SUCCESS CHEERS Win Cute Vocal Chime 03.wav';
+LevelUpEfect.src = 'Sounds/SUCCESS CHEERS Win Cute Vocal Chime 03.wav';
 
 // AREA OF THE GAME
 const gameArea = {
@@ -141,7 +141,7 @@ class BaseElement {
     this.y = y;
     this.status = status;
     this.Image = new Image();
-    this.Image.src = '/images/red_Brick.png';
+    this.Image.src = 'images/red_Brick.png';
   }
 
   update() {
@@ -160,7 +160,7 @@ class BaseElement {
       ball.speedY = -ball.speedY;
       this.status = 0;
       score += 1;
-      collisionEfect.play();
+      collissionEfect.play();
     }
     if (
       ball.x - ball.radius >= this.x &&
@@ -187,7 +187,7 @@ class MovingElement {
     this.speedX = 0;
     this.speedY = 0;
     this.Image = new Image();
-    this.Image.src = '/images/breakout_sprites.png';
+    this.Image.src = 'images/breakout_sprites.png';
   }
 
   update() {
@@ -201,7 +201,7 @@ class MovingElement {
 }
 
 function test() {
-  baseImage.src = '/images/breakout_sprites.png';
+  baseImage.src = 'images/breakout_sprites.png';
   baseImage.onload = () => {
     gameArea.context.drawImage(baseImage, 50, 20);
   };
