@@ -187,7 +187,7 @@ class MovingElement {
     this.speedX = 0;
     this.speedY = 0;
     this.Image = new Image();
-    this.Image.src = 'images/breakout_sprites.png';
+    this.Image.src = './images/breakout_sprites.png';
   }
 
   update() {
