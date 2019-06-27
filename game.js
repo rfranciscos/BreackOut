@@ -2,14 +2,14 @@ let score = 0;
 let level = 1;
 let speedBall = (level * 5) / 2;
 let lifes = 3;
-const collissionEfect = document.createElement('audio');
-collissionEfect.src = 'Sounds/collission.wav';
+const collisionEfect = document.createElement('audio');
+collisionEfect.src = './sounds/collision.wav';
 
 const gameOverEfect = document.createElement('audio');
-gameOverEfect.src = 'Sounds/gameOver.wav';
+gameOverEfect.src = 'sounds/gameOver.wav';
 
 const LevelUpEfect = document.createElement('audio');
-LevelUpEfect.src = 'Sounds/levelUp.wav';
+LevelUpEfect.src = 'sounds/levelUp.wav';
 
 // AREA OF THE GAME
 const gameArea = {
@@ -160,7 +160,7 @@ class BaseElement {
       ball.speedY = -ball.speedY;
       this.status = 0;
       score += 1;
-      collissionEfect.play();
+      collisionEfect.play();
     }
     if (
       ball.x - ball.radius >= this.x &&
