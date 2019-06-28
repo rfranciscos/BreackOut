@@ -19,7 +19,7 @@ const gameArea = {
     this.canvas.height = 800;
     this.canvas.padding = 300;
     this.context = this.canvas.getContext('2d');
-    document.body.insertBefore(this.canvas, document.body.childNodes[2]);
+    document.body.insertBefore(this.canvas, document.body.childNodes[0]);
     this.interval = setInterval(updateGameArea, 20);
   },
 
