@@ -2,10 +2,10 @@ canvas {
   border: 2px solid black;
   background-image: url('images/breakout_bg.png');
   background-repeat: round;
-  margin-left: 250px;
+  margin-left: 450px;
 }
 
 body {
-  background-color: black;
+  background: black;
   color: white;
 }

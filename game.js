@@ -3,7 +3,7 @@ let level = 1;
 let speedBall = (level * 5) / 2;
 let lifes = 3;
 const collisionEfect = document.createElement('audio');
-collisionEfect.src = './sounds/collision.wav';
+collisionEfect.src = 'sounds/collision.wav';
 
 const gameOverEfect = document.createElement('audio');
 gameOverEfect.src = 'sounds/gameOver.wav';
@@ -33,7 +33,7 @@ const gameArea = {
     this.context.fillStyle = 'white';
     this.context.fillText('SCORE: ' + points, 350, 50);
     this.context.fillText('LEVEL: ' + level, 550, 50);
-    this.context.fillText('LIFE: ' + lifes, 50, 50);
+    this.context.fillText('LIVES: ' + lifes, 50, 50);
   }
 };
 
