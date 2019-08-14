@@ -1,5 +1,5 @@
 # Breakout
-
+Link para jogar https://rfranciscos.github.io/BreakOut/
 _Este é meu primeiro projeto solo como desenvolvedor web, trata-se de uma releitura (clone) de um dos clássicos da Atari._
 
 ## Sobre o jogo 🚀
