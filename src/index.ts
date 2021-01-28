@@ -1,1 +1,1 @@
-console.log('hehehe funfo');
+export * from './GameArea';
