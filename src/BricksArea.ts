@@ -1,3 +1,4 @@
+import { Ball } from './Ball';
 import { Brick } from './Brick';
 import { GameArea } from './GameArea';
 
@@ -9,8 +10,9 @@ export class BricksArea {
   numberOfRows: number;
   bricks: Brick[];
   gameArea: GameArea;
+  ball: Ball;
 
-  constructor(colluns: number, rows: number, gameArea: GameArea) {
+  constructor(colluns: number, rows: number, gameArea: GameArea, ball: Ball) {
     this.width = 50;
     this.height = 20;
     this.padding = 1;
@@ -18,6 +20,7 @@ export class BricksArea {
     this.numberOfRows = rows;
     this.bricks = [];
     this.gameArea = gameArea;
+    this.ball = ball;
   }
 
   buildRows = (indexCollumn: number): void => {
@@ -30,6 +33,7 @@ export class BricksArea {
           this.height,
           true,
           this.gameArea,
+          this.ball,
         ),
       );
     }
@@ -46,8 +50,12 @@ export class BricksArea {
   };
 
   update = (): void => {
-    this.bricks.forEach((brick) => {
+    this.bricks.forEach((brick, i) => {
       brick.update();
+      brick.collision();
+      if (brick.status === false) {
+        this.bricks.splice(i, 1);
+      }
     });
   };
 }
