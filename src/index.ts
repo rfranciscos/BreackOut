@@ -11,5 +11,20 @@ function updateGameArea() {
   player.setPosition();
 }
 
+document.onkeydown = (ev) => {
+  if (ev.key === 'ArrowLeft') {
+    player.leftMotion();
+  }
+  if (ev.key === 'ArrowRight') {
+    player.rightMotion();
+  }
+};
+
+document.onkeyup = (ev) => {
+  if (ev.key === 'ArrowLeft' || ev.key === 'ArrowRight') {
+    player.stopMotion();
+  }
+};
+
 setInterval(updateGameArea, 20);
 gameArea.start();

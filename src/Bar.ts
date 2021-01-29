@@ -32,4 +32,16 @@ export class Bar {
     this.positionX += this.speedX;
     this.positionY += this.speedY;
   };
+
+  leftMotion = (): void => {
+    this.speedX = -8;
+  };
+
+  rightMotion = (): void => {
+    this.speedX = 8;
+  };
+
+  stopMotion = (): void => {
+    this.speedX = 0;
+  };
 }
