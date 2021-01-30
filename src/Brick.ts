@@ -11,6 +11,7 @@ export class Brick {
   image: HTMLImageElement;
   gameArea: GameArea;
   ball: Ball;
+  collisionEfect: HTMLAudioElement;
 
   constructor(
     positionX: number,
@@ -30,6 +31,8 @@ export class Brick {
     this.image.src = BrickImg;
     this.gameArea = gameArea;
     this.ball = ball;
+    this.collisionEfect = document.createElement('audio');
+    this.collisionEfect.src = 'sounds/collision.wav';
   }
 
   update = (): void => {
@@ -48,7 +51,7 @@ export class Brick {
       this.ball.speedY = -this.ball.speedY;
       this.status = false;
       // score += 1;
-      // collisionEfect.play();
+      this.collisionEfect.play();
     }
     if (
       this.ball.positionX - this.ball.radius >= this.positionX &&
@@ -60,7 +63,7 @@ export class Brick {
       this.ball.speedY = -this.ball.speedY;
       this.status = false;
       // score += 1;
-      // collisionEfect.play();
+      this.collisionEfect.play();
     }
   };
 }
